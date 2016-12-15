@@ -18,7 +18,7 @@ class Layer(object):
 	def get_output(self, input):
 		self.input = input
 		self.h = self.weights.dot(self.input)
-		self.output = a_func(self.h)
+		self.output = self.a_func(self.h)
 		return self.output
 
 	def back_prop(self, error):
@@ -29,11 +29,14 @@ class Layer(object):
 		we want to find dO/dWn (ie part of the gradient) and dO/dhn ("propogating" the error)
  
 		"""	
-		error_h = np.transpose(np.multiply(error,d_a_func(self.h)))
-		next_error = error_h.dot(self.weights)
 
+		error_h = np.transpose(np.multiply(error,self.d_a_func(self.h)))
+		#print ('error_h should be a vector: ,', error_h)
+		next_error = error_h.dot(self.weights)
+		#print ('next error should be a vector: ', next_error)
 		self.grad_weights = np.outer(error_h, self.input)
 
+		return next_error
 
 class non_linear(object):
 	def __init__(self, type):
@@ -77,26 +80,6 @@ class non_linear(object):
 	def none_d(self, val):
 		return 1
 
-
-
-n_nodes = 2
-weights = np.array([[1,0],[0,1]])
-input = np.array([[0.5],[-1]])
-
-nl = non_linear('square')
-a_func = nl.g
-d_a_func = nl.g_1
-expected = np.array([[1],[4]])
-
-l1 = Layer(weights, a_func, d_a_func)
-
-for i in range(200):
-	output = l1.get_output(input)
-	error = (output - expected)
-	next_error = l1.back_prop(error)
-	l1.weights = l1.weights - 0.01*l1.grad_weights
-
-	print (output)
 
 
 

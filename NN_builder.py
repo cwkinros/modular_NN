@@ -20,12 +20,10 @@ class NeuralNet(object):
 			weights = np.random.randn(n_nodes,last_size)
 
 			# string should be from options
-			nl = non_linear('square')
+			nl = non_linear('none')
 
 
 			self.layers.append(Layer(weights, nl.g, nl.g_1)) 
-
-
 			last_size = n_nodes
 
 
@@ -46,16 +44,19 @@ class NeuralNet(object):
 
 	def back_prop(self, error):
 		n = len(self.layers)
-		for i in range(n):
-			error = self.layers[n-i-1].back_prop(error)
 
+		for i in range(n):
+			#print ('error at ', i, ' is: ', error)
+			next_error = self.layers[n-i-1].back_prop(error)
+			assert len(next_error) == len(self.layers[n-i-1].input), 'AAAAAA'+str(next_error)+str(self.layers[n-i-1].input)
+			error = next_error
 	def update(self, inputi, expected, lr):
 		error = self.error(inputi, expected)
+		#print ('error: ', error)
 		self.back_prop(error)
 
 		for layer in self.layers:
-			print 'here'
-			layer.weights = layer.weights - lr*layer.grad_weights
+			layer.weights = layer.weights + lr*layer.grad_weights
 
 		return error
 

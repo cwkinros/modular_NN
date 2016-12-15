@@ -20,28 +20,35 @@ def test_layer():
 		next_error = l1.back_prop(error)
 		l1.weights = l1.weights - 0.01*l1.grad_weights
 
-		print (output)
+
 
 
 def test_NN_builder():
 
 	#3 layers:
-	layer_options = {1: {'n_nodes':10, 'init':'rand', 'non_linear':'none'}, 2: {'n_nodes':20}, 3: {'n_nodes':2}}
+	layer_options = {1: {'n_nodes':10},2: {'n_nodes':20}, 3: {'n_nodes':2}}
 
 	input_size = 2
 
-	inputi = np.array([[0.5],[-1]])
-	expected = np.array([[1],[4]])
+	inputi = [0.5,-1]
+	expected =[1,4] 
 
 	nn = NeuralNet(input_size, layer_options)
 
 	errors = []
-	for i in range(100):
-		error = nn.update(inputi, expected, 0.01)
-		errors.append(error)
+	for i in range(200):
+		error = nn.update(inputi, expected, 0.001)
+		e = sum(abs(error))
+		errors.append(e)
 
-	plt.plot(errors)
-	plt.show()
+	final_output = nn.forward_prop(inputi)
+	print ('final_output: ', final_output)
+	return errors
+
+errors = test_NN_builder()
+print (errors)
+	#plt.plot(errors)
+	#plt.show()
 
 
-test_NN_builder()
+#test_NN_builder()
