@@ -31,10 +31,8 @@ class Layer(object):
 		"""	
 		error_h = np.transpose(np.multiply(error,d_a_func(self.h)))
 		next_error = error_h.dot(self.weights)
-		print 'here b'
-		self.grad_weights = np.outer(error_h, self.input)
 
-		return next_error
+		self.grad_weights = np.outer(error_h, self.input)
 
 
 class non_linear(object):
@@ -81,7 +79,24 @@ class non_linear(object):
 
 
 
+n_nodes = 2
+weights = np.array([[1,0],[0,1]])
+input = np.array([[0.5],[-1]])
 
+nl = non_linear('square')
+a_func = nl.g
+d_a_func = nl.g_1
+expected = np.array([[1],[4]])
+
+l1 = Layer(weights, a_func, d_a_func)
+
+for i in range(200):
+	output = l1.get_output(input)
+	error = (output - expected)
+	next_error = l1.back_prop(error)
+	l1.weights = l1.weights - 0.01*l1.grad_weights
+
+	print (output)
 
 
 
